@@ -77,7 +77,7 @@ mamba run -n curobo pip install opencv-python pyrealsense2 transforms3d
 
 echo "Building ROS workspace..."
 if [ -d "src" ]; then
-    colcon build --packages-select curobo
+    colcon build --packages-select motion_planner
     echo "source ~/code/install/setup.zsh" >> ~/.zshrc
 else
     echo "No src directory found. Skipping ROS workspace build."

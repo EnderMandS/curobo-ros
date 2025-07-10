@@ -157,4 +157,11 @@ pip install opencv-python pyrealsense2 transforms3d
 # Known Issues
 
 1. When running `colcon build`, stderr `ERROR setuptools_scm._file_finders.git listing git files failed - pretending there aren't any`.
+    
     This warning is related to `setuptools_scm` not being able to find git version information for the curobo package. The warning doesn't affect functionality.
+
+2. Building ROS workspace without `--packages-select` will build `nvidia_curobo` which may lead to package broken.
+
+    You can try to reinstall `nvidia_curobo` by running `pip install -e . --no-build-isolation` in `curobo` folder
+
+3. The ROS package name should not be the same as any packages in mamba environment.

@@ -43,8 +43,9 @@ RUN wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
 # cuRobo
 RUN git clone --depth 1 --recursive https://github.com/NVlabs/curobo.git && \
     sed -i 's/requires = \["setuptools>=45", "setuptools_scm>=6.2", "wheel", "torch"\]/requires = ["setuptools>=61,<69", "setuptools_scm>=6.2,<6.9", "wheel", "torch==2.4.0"]/' curobo/pyproject.toml && \
-    echo ": 1700000000:0;colcon build --packages-select curobo" >> /home/$USERNAME/.zsh_history && \
-    echo ": 1700000001:0;./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history
+    echo ": 1700000000:0;ros2 run motion_planner motion_planner" >> /home/$USERNAME/.zsh_history && \
+    echo ": 1700000001:0;colcon build --packages-select motion_planner" >> /home/$USERNAME/.zsh_history && \
+    echo ": 1700000002:0;./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history
 
 # ROS workspace
 COPY . /home/${USERNAME}/code
