@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/zsh --login
 
 set -e
 
@@ -64,10 +64,11 @@ fi
 #     mamba activate curobo
 #     mamba install colcon-common-extensions catkin_tools rosdep -y
 
+mamba activate
 mamba activate curobo
 
 echo "Installing torch"
-# python3 -m pip install torch==2.4.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+python3 -m pip install torch==2.4.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 cd curobo
 python3 -m pip install -e . --no-build-isolation
 cd ~/code

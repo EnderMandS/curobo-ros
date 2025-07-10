@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG USERNAME=ubuntu
 
 RUN apt update && \
-    apt install -y git-lfs cmake sudo zsh curl wget tree && \
+    apt install -y git-lfs cmake sudo zsh curl wget tree vim && \
     apt install -y libglib2.0-0 libgl1 libeigen3-dev && \
     rm -rf /var/lib/apt/lists/*
 
@@ -16,8 +16,6 @@ RUN groupadd --gid $USER_GID --force $USERNAME \
     && mkdir -p /etc/sudoers.d \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME && \
-    echo "root:'" | chpasswd && \
-    echo "ubuntu:'" | chpasswd && \
     usermod -aG sudo ubuntu
 USER $USERNAME
 
@@ -44,7 +42,8 @@ RUN wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     rm -rf /tmp/* || true
 
 # Install ROS2 humble
-RUN /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
+RUN /home/${USERNAME}/miniconda3/bin/mamba activate && \
+    /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
     /home/${USERNAME}/miniconda3/bin/mamba activate curobo && \
     /home/${USERNAME}/miniconda3/bin/conda config --env --add channels conda-forge && \
     /home/${USERNAME}/miniconda3/bin/conda config --env --remove channels defaults && \
@@ -53,7 +52,6 @@ RUN /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
     /home/${USERNAME}/miniconda3/bin/mamba deactivate && \
     /home/${USERNAME}/miniconda3/bin/mamba activate curobo && \
     /home/${USERNAME}/miniconda3/bin/mamba install colcon-common-extensions catkin_tools rosdep -y && \
-    python3 -m pip install torch==2.4.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 && \
     echo ": 1700000000:0;colcon build" >> /home/$USERNAME/.zsh_history && \
     echo ": 1700000001:0;zsh ./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history && \
     rm -rf /tmp/* || true
