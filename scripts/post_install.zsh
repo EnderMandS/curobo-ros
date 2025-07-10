@@ -52,17 +52,18 @@ fi
 #     source ~/.zshrc
 # fi
 
-# echo "Creating mamba environment..."
-# if ! mamba env list | grep -q "curobo"; then
-#     mamba create -n curobo
-#     mamba activate curobo
-#     conda config --env --add channels conda-forge
-#     conda config --env --remove channels defaults
-#     conda config --env --add channels robostack-humble
-#     mamba install ros-humble-desktop -y
-#     mamba deactivate
-#     mamba activate curobo
-#     mamba install colcon-common-extensions catkin_tools rosdep -y
+echo "Creating mamba environment..."
+if ! mamba env list | grep -q "curobo"; then
+    mamba create -n curobo
+fi
+mamba activate curobo
+conda config --env --add channels conda-forge
+conda config --env --remove channels defaults
+conda config --env --add channels robostack-humble
+mamba install ros-humble-desktop -y
+mamba deactivate
+mamba activate curobo
+mamba install colcon-common-extensions catkin_tools rosdep -y
 
 echo "Installing torch"
 mamba run -n curobo pip install torch==2.4.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
@@ -76,7 +77,11 @@ mamba run -n curobo pip install opencv-python pyrealsense2 transforms3d
 
 echo "Building ROS workspace..."
 if [ -d "src" ]; then
-    colcon build
+    colcon build --packages-select curobo
+    echo "source ~/code/install/setup.zsh" >> ~/.zshrc
 else
     echo "No src directory found. Skipping ROS workspace build."
 fi
+
+echo "Post-install script completed successfully."
+echo "Please restart your terminal or run 'source ~/.zshrc' to apply changes."

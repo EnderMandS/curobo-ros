@@ -40,19 +40,11 @@ RUN wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     /home/${USERNAME}/miniconda3/bin/conda install -n base -c conda-forge mamba -y && \
     echo 'eval "$(~/miniconda3/bin/mamba shell hook --shell zsh)"' >> /home/${USERNAME}/.zshrc
 
-# Install ROS2 humble
-RUN /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
-    /home/${USERNAME}/miniconda3/bin/mamba env config vars set -n curobo channels=conda-forge && \
-    /home/${USERNAME}/miniconda3/bin/mamba env config vars set -n curobo channels=robostack-humble && \
-    /home/${USERNAME}/miniconda3/bin/mamba install -n curobo ros-humble-desktop -y && \
-    /home/${USERNAME}/miniconda3/bin/mamba install -n curobo colcon-common-extensions catkin_tools rosdep -y && \
-    echo ": 1700000000:0;colcon build" >> /home/$USERNAME/.zsh_history && \
-    echo ": 1700000001:0;zsh ./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history && \
-    rm -rf /tmp/*
-
 # cuRobo
 RUN git clone --depth 1 --recursive https://github.com/NVlabs/curobo.git && \
-    sed -i 's/requires = \["setuptools>=45", "setuptools_scm>=6.2", "wheel", "torch"\]/requires = ["setuptools>=61,<69", "setuptools_scm>=6.2,<6.9", "wheel", "torch==2.4.0"]/' curobo/pyproject.toml
+    sed -i 's/requires = \["setuptools>=45", "setuptools_scm>=6.2", "wheel", "torch"\]/requires = ["setuptools>=61,<69", "setuptools_scm>=6.2,<6.9", "wheel", "torch==2.4.0"]/' curobo/pyproject.toml && \
+    echo ": 1700000000:0;colcon build --packages-select curobo" >> /home/$USERNAME/.zsh_history && \
+    echo ": 1700000001:0;./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history
 
 # ROS workspace
 COPY . /home/${USERNAME}/code
