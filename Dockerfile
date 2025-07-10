@@ -53,6 +53,9 @@ RUN /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
     /home/${USERNAME}/miniconda3/bin/mamba deactivate && \
     /home/${USERNAME}/miniconda3/bin/mamba activate curobo && \
     /home/${USERNAME}/miniconda3/bin/mamba install colcon-common-extensions catkin_tools rosdep -y && \
+    python3 -m pip install torch==2.4.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 && \
+    echo ": 1700000000:0;colcon build" >> /home/$USERNAME/.zsh_history && \
+    echo ": 1700000001:0;zsh ./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history && \
     rm -rf /tmp/* || true
 
 # cuRobo
