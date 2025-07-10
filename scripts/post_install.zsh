@@ -64,18 +64,19 @@ fi
 #     mamba activate curobo
 #     mamba install colcon-common-extensions catkin_tools rosdep -y
 
-mamba activate
-mamba activate curobo
-
 echo "Installing torch"
-python3 -m pip install torch==2.4.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+mamba run -n curobo pip install torch==2.4.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 cd curobo
-python3 -m pip install -e . --no-build-isolation
+mamba run -n curobo pip install -e . --no-build-isolation
 cd ~/code
 
 echo "Installing nvblox_torch"
-pip install https://github.com/nvidia-isaac/nvblox/releases/download/v0.0.8/nvblox_torch-0.0.8rc5+cu11ubuntu22-863-py3-none-linux_x86_64.whl
-pip install opencv-python pyrealsense2 transforms3d
+mamba run -n curobo pip install https://github.com/nvidia-isaac/nvblox/releases/download/v0.0.8/nvblox_torch-0.0.8rc5+cu11ubuntu22-863-py3-none-linux_x86_64.whl
+mamba run -n curobo pip install opencv-python pyrealsense2 transforms3d
 
 echo "Building ROS workspace..."
-colcon build
+if [ -d "src" ]; then
+    colcon build
+else
+    echo "No src directory found. Skipping ROS workspace build."
+fi

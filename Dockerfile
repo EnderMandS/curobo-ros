@@ -38,23 +38,17 @@ RUN wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     rm Miniconda3-latest-Linux-x86_64.sh && \
     /home/${USERNAME}/miniconda3/bin/conda init zsh && \
     /home/${USERNAME}/miniconda3/bin/conda install -n base -c conda-forge mamba -y && \
-    echo 'eval "$(~/miniconda3/bin/mamba shell hook --shell zsh)"' >> /home/${USERNAME}/.zshrc && \
-    rm -rf /tmp/* || true
+    echo 'eval "$(~/miniconda3/bin/mamba shell hook --shell zsh)"' >> /home/${USERNAME}/.zshrc
 
 # Install ROS2 humble
-RUN /home/${USERNAME}/miniconda3/bin/mamba activate && \
-    /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
-    /home/${USERNAME}/miniconda3/bin/mamba activate curobo && \
-    /home/${USERNAME}/miniconda3/bin/conda config --env --add channels conda-forge && \
-    /home/${USERNAME}/miniconda3/bin/conda config --env --remove channels defaults && \
-    /home/${USERNAME}/miniconda3/bin/conda config --env --add channels robostack-humble && \
-    /home/${USERNAME}/miniconda3/bin/mamba install ros-humble-desktop -y && \
-    /home/${USERNAME}/miniconda3/bin/mamba deactivate && \
-    /home/${USERNAME}/miniconda3/bin/mamba activate curobo && \
-    /home/${USERNAME}/miniconda3/bin/mamba install colcon-common-extensions catkin_tools rosdep -y && \
+RUN /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
+    /home/${USERNAME}/miniconda3/bin/mamba env config vars set -n curobo channels=conda-forge && \
+    /home/${USERNAME}/miniconda3/bin/mamba env config vars set -n curobo channels=robostack-humble && \
+    /home/${USERNAME}/miniconda3/bin/mamba install -n curobo ros-humble-desktop -y && \
+    /home/${USERNAME}/miniconda3/bin/mamba install -n curobo colcon-common-extensions catkin_tools rosdep -y && \
     echo ": 1700000000:0;colcon build" >> /home/$USERNAME/.zsh_history && \
     echo ": 1700000001:0;zsh ./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history && \
-    rm -rf /tmp/* || true
+    rm -rf /tmp/*
 
 # cuRobo
 RUN git clone --depth 1 --recursive https://github.com/NVlabs/curobo.git && \
