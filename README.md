@@ -17,7 +17,7 @@ nvidia-smi --query-gpu=compute_cap --format=csv,noheader | head -n 1
 docker pull ghcr.io/endermands/curobo:latest
 docker run --name curobo --runtime=nvidia --gpus all -itd --network=host -v $HOME/.Xauthority:/root/.Xauthority -e DISPLAY ghcr.io/endermands/curobo:latest
 docker exec -it curobo zsh
-zsh ./scripts/post_install.zsh
+./scripts/post_install.zsh
 ```
 
 # Standard compile
@@ -153,6 +153,10 @@ sudo apt install -y libglib2.0-0 libgl1
 pip install https://github.com/nvidia-isaac/nvblox/releases/download/v0.0.8/nvblox_torch-0.0.8rc5+cu11ubuntu22-863-py3-none-linux_x86_64.whl
 pip install opencv-python pyrealsense2 transforms3d
 ```
+
+# Verify installation (TODO)
+
+Verify curobo installation by running `python scripts/curobo_motion.py`.
 
 # Known Issues
 

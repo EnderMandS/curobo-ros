@@ -52,18 +52,18 @@ fi
 #     source ~/.zshrc
 # fi
 
-echo "Creating mamba environment..."
-if ! mamba env list | grep -q "curobo"; then
-    mamba create -n curobo
-fi
-mamba activate curobo
-conda config --env --add channels conda-forge
-conda config --env --remove channels defaults
-conda config --env --add channels robostack-humble
-mamba install ros-humble-desktop -y
-mamba deactivate
-mamba activate curobo
-mamba install colcon-common-extensions catkin_tools rosdep -y
+# echo "Creating mamba environment..."
+# if ! mamba env list | grep -q "curobo"; then
+#     mamba create -n curobo
+# fi
+# # mamba activate curobo
+# conda config --env --add channels conda-forge
+# conda config --env --remove channels defaults || true
+# conda config --env --add channels robostack-humble
+# mamba install -n curobo ros-humble-desktop -y
+# # mamba deactivate
+# # mamba activate curobo
+# mamba install -n curobo colcon-common-extensions catkin_tools rosdep -y
 
 echo "Installing torch"
 mamba run -n curobo pip install torch==2.4.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
@@ -75,13 +75,13 @@ echo "Installing nvblox_torch"
 mamba run -n curobo pip install https://github.com/nvidia-isaac/nvblox/releases/download/v0.0.8/nvblox_torch-0.0.8rc5+cu11ubuntu22-863-py3-none-linux_x86_64.whl
 mamba run -n curobo pip install opencv-python pyrealsense2 transforms3d
 
-echo "Building ROS workspace..."
-if [ -d "src" ]; then
-    colcon build --packages-select motion_planner
-    echo "source ~/code/install/setup.zsh" >> ~/.zshrc
-else
-    echo "No src directory found. Skipping ROS workspace build."
-fi
+# echo "Building ROS workspace..."
+# if [ -d "src" ]; then
+#     mamba run -n curobo colcon build --packages-select motion_planner
+#     echo "source ~/code/install/setup.zsh" >> ~/.zshrc
+# else
+#     echo "No src directory found. Skipping ROS workspace build."
+# fi
 
-echo "Post-install script completed successfully."
-echo "Please restart your terminal or run 'source ~/.zshrc' to apply changes."
+echo "\nPost-install script completed successfully."
+echo "Please relogin to your terminal to apply changes.\n"

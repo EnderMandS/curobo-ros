@@ -37,17 +37,33 @@ RUN wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     bash Miniconda3-latest-Linux-x86_64.sh -b -u -p ~/miniconda3 && \
     rm Miniconda3-latest-Linux-x86_64.sh && \
     /home/${USERNAME}/miniconda3/bin/conda init zsh && \
-    /home/${USERNAME}/miniconda3/bin/conda install -n base -c conda-forge mamba -y && \
-    echo 'eval "$(~/miniconda3/bin/mamba shell hook --shell zsh)"' >> /home/${USERNAME}/.zshrc
+    /home/${USERNAME}/miniconda3/bin/conda install -n base -c conda-forge mamba -y
 
-# cuRobo
-RUN git clone --depth 1 --recursive https://github.com/NVlabs/curobo.git && \
-    sed -i 's/requires = \["setuptools>=45", "setuptools_scm>=6.2", "wheel", "torch"\]/requires = ["setuptools>=61,<69", "setuptools_scm>=6.2,<6.9", "wheel", "torch==2.4.0"]/' curobo/pyproject.toml && \
-    echo ": 1700000000:0;ros2 run motion_planner motion_planner" >> /home/$USERNAME/.zsh_history && \
-    echo ": 1700000001:0;colcon build --packages-select motion_planner" >> /home/$USERNAME/.zsh_history && \
-    echo ": 1700000002:0;./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history
+# Install ROS 2 Humble
+RUN /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
+    /home/${USERNAME}/miniconda3/bin/conda config --env --add channels conda-forge && \
+    /home/${USERNAME}/miniconda3/bin/conda config --env --remove channels defaults && \
+    /home/${USERNAME}/miniconda3/bin/conda config --env --add channels robostack-humble && \
+    /home/${USERNAME}/miniconda3/bin/mamba install -n curobo ros-humble-desktop -y && \
+    /home/${USERNAME}/miniconda3/bin/mamba install -n curobo colcon-common-extensions catkin_tools rosdep -y
 
 # ROS workspace
 COPY . /home/${USERNAME}/code
+RUN sudo chown -R ${USER_UID}:${USER_GID} /home/${USERNAME}/code && \
+    /home/${USERNAME}/miniconda3/bin/mamba run -n curobo colcon build --packages-select motion_planner
+
+# cuRobo
+RUN git clone --depth 1 --recursive https://github.com/NVlabs/curobo.git && \
+    sed -i 's/requires = \["setuptools>=45", "setuptools_scm>=6.2", "wheel", "torch"\]/requires = ["setuptools>=62,<69", "setuptools_scm>=6.2,<6.9", "wheel", "torch==2.4.0"]/' curobo/pyproject.toml && \
+    sed -i '/setuptools_scm>=6.2/i setuptools>=62,<=69' curobo/setup.cfg && \
+    sed -i 's/setuptools_scm>=6.2/setuptools_scm>=6.2,<6.9/' curobo/setup.cfg && \
+    sed -i 's/torch>=1.10/torch==2.4.0/' curobo/setup.cfg
+
+RUN echo 'eval "$(~/miniconda3/bin/mamba shell hook --shell zsh)"' >> /home/${USERNAME}/.zshrc && \
+    echo "mamba activate curobo" >> /home/${USERNAME}/.zshrc && \
+    echo "source ~/code/install/setup.zsh" >> /home/${USERNAME}/.zshrc && \
+    echo ": 1700000000:0;ros2 run motion_planner motion_planner" >> /home/$USERNAME/.zsh_history && \
+    echo ": 1700000001:0;colcon build --packages-select motion_planner" >> /home/$USERNAME/.zsh_history && \
+    echo ": 1700000002:0;./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history
 
 ENTRYPOINT [ "/bin/zsh" ]

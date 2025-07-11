@@ -17,7 +17,7 @@ setup(
     maintainer_email='952025764@qq.com',
     description='cuRmotion_plannerobo motion planning ROS2 package',
     license='TODO: License declaration',
-    # tests_require=['pytest'],
+    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
             'motion_planner = motion_planner.motion_planner:main',
