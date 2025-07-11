@@ -55,7 +55,7 @@ RUN sudo chown -R ${USER_UID}:${USER_GID} /home/${USERNAME}/code && \
 # cuRobo
 RUN git clone --depth 1 --recursive https://github.com/NVlabs/curobo.git && \
     sed -i 's/requires = \["setuptools>=45", "setuptools_scm>=6.2", "wheel", "torch"\]/requires = ["setuptools>=62,<69", "setuptools_scm>=6.2,<6.9", "wheel", "torch==2.4.0"]/' curobo/pyproject.toml && \
-    sed -i '/setuptools_scm>=6.2/i setuptools>=62,<=69' curobo/setup.cfg && \
+    sed -i '/setuptools_scm>=6.2/i\  setuptools>=62,<=69' curobo/setup.cfg && \
     sed -i 's/setuptools_scm>=6.2/setuptools_scm>=6.2,<6.9/' curobo/setup.cfg && \
     sed -i 's/torch>=1.10/torch==2.4.0/' curobo/setup.cfg
 
