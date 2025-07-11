@@ -60,7 +60,10 @@ class MotionPlanningNode(Node):
         ee_link = config_file["robot_cfg"]["kinematics"]["ee_link"]
         robot_cfg = RobotConfig.from_basic(urdf_file, base_link, ee_link, tensor_args)
 
-        self.get_logger().debug(f"Config path file: {os.path.join(get_robot_configs_path(), config_file_name)}")
+        self.cspace_joints = config_file['robot_cfg']['kinematics']['cspace']['joint_names']
+
+        self.get_logger().info(f"Config path file: {os.path.join(get_robot_configs_path(), config_file_name)}")
+        self.get_logger().info(f"cspace joints: {config_file['robot_cfg']['kinematics']['cspace']['joint_names']}")
         self.get_logger().debug(f"Robot config: {robot_cfg}")
 
         motion_gen_config = MotionGenConfig.load_from_robot_config(
@@ -71,11 +74,11 @@ class MotionPlanningNode(Node):
         self.motion_gen = MotionGen(motion_gen_config)
         self.motion_gen.warmup()
 
-    def joint_state_callback(self, msg):
+    def joint_state_callback(self, msg:JointState):
         """Callback for joint state updates"""
         self.current_joint_state = msg
 
-    def goal_pose_callback(self, msg):
+    def goal_pose_callback(self, msg:Pose):
         """Callback for goal pose - triggers motion planning"""
         try:
             # Check if we have current joint state
@@ -83,6 +86,14 @@ class MotionPlanningNode(Node):
                 self.get_logger().warn(
                     "No joint state available. Make sure joint_states topic is publishing."
                 )
+                return
+            
+            # check joint names
+            if not all(joint in self.cspace_joints for joint in self.current_joint_state.name):
+                self.get_logger().error(
+                    "Current joint state does not match expected joint names."
+                )
+                self.get_logger().error("Planning will not proceed.")
                 return
 
             self.get_logger().info(
@@ -97,7 +108,7 @@ class MotionPlanningNode(Node):
 
             # Plan motion
             result = self.motion_gen.plan_single(
-                start_state, goal_pose, MotionGenPlanConfig(max_attempts=1)
+                start_state, goal_pose, MotionGenPlanConfig(max_attempts=3)
             )
 
             if result.success:
@@ -119,14 +130,7 @@ class MotionPlanningNode(Node):
         point = self.trajectory_queue.popleft()
         joint_state_msg = JointState()
         joint_state_msg.header.stamp = self.get_clock().now().to_msg()
-        joint_state_msg.name = [
-            "shoulder_pan_joint",
-            "shoulder_lift_joint",
-            "elbow_joint",
-            "wrist_1_joint",
-            "wrist_2_joint",
-            "wrist_3_joint",
-        ]
+        joint_state_msg.name = self.cspace_joints
         joint_state_msg.position = point.position.cpu().numpy().flatten().tolist()
 
         self.joint_commands_pub.publish(joint_state_msg)
@@ -145,22 +149,13 @@ class MotionPlanningNode(Node):
             ]
         )
 
-    def ros_joint_state_to_curobo_joint_state(self, ros_joint_state):
+    def ros_joint_state_to_curobo_joint_state(self, ros_joint_state:JointState):
         """Convert ROS JointState to cuRobo JointState"""
         if len(ros_joint_state.position) == 0:
-            # Default to zeros if no joint state provided
-            positions = torch.zeros(1, 6).cuda()
-            joint_names = [
-                "shoulder_pan_joint",
-                "shoulder_lift_joint",
-                "elbow_joint",
-                "wrist_1_joint",
-                "wrist_2_joint",
-                "wrist_3_joint",
-            ]
-        else:
-            positions = torch.tensor(ros_joint_state.position).unsqueeze(0).cuda()
-            joint_names = ros_joint_state.name
+            raise ValueError("Received empty joint state positions")
+
+        positions = torch.tensor(ros_joint_state.position).unsqueeze(0).cuda()
+        joint_names = ros_joint_state.name
 
         return CuroboJointState.from_position(positions, joint_names=joint_names)
 
@@ -168,14 +163,7 @@ class MotionPlanningNode(Node):
         """Convert cuRobo trajectory to ROS JointTrajectory"""
         ros_traj = JointTrajectory()
         ros_traj.header.stamp = self.get_clock().now().to_msg()
-        ros_traj.joint_names = [
-            "shoulder_pan_joint",
-            "shoulder_lift_joint",
-            "elbow_joint",
-            "wrist_1_joint",
-            "wrist_2_joint",
-            "wrist_3_joint",
-        ]
+        ros_traj.joint_names = self.cspace_joints
 
         for i, point in enumerate(curobo_traj):
             traj_point = JointTrajectoryPoint()
