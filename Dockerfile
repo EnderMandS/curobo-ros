@@ -45,6 +45,7 @@ RUN /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
     /home/${USERNAME}/miniconda3/bin/conda config --env --remove channels defaults && \
     /home/${USERNAME}/miniconda3/bin/conda config --env --add channels robostack-humble && \
     /home/${USERNAME}/miniconda3/bin/mamba install -n curobo ros-humble-desktop -y && \
+    /home/${USERNAME}/miniconda3/bin/mamba install -n curobo setuptools==69.5.1 -y && \
     /home/${USERNAME}/miniconda3/bin/mamba install -n curobo colcon-common-extensions catkin_tools rosdep -y
 
 # ROS workspace
