@@ -154,9 +154,15 @@ pip install https://github.com/nvidia-isaac/nvblox/releases/download/v0.0.8/nvbl
 pip install opencv-python pyrealsense2 transforms3d
 ```
 
-# Verify installation (TODO)
+# Verify installation
 
 Verify curobo installation by running `python scripts/curobo_motion.py`.
+
+# Usage
+Modify `src/motion_planner/motion_planner/motion_planner.py` to your own robot.
+``` shell
+ros2 run motion_planner motion_planner
+```
 
 # Known Issues
 
@@ -164,8 +170,6 @@ Verify curobo installation by running `python scripts/curobo_motion.py`.
     
     This warning is related to `setuptools_scm` not being able to find git version information for the curobo package. The warning doesn't affect functionality.
 
-2. Building ROS workspace without `--packages-select` will build `nvidia_curobo` which may lead to package broken.
+2. The ROS package name should not be the same as any packages in mamba environment.
 
-    You can try to reinstall `nvidia_curobo` by running `pip install -e . --no-build-isolation` in `curobo` folder
-
-3. The ROS package name should not be the same as any packages in mamba environment.
+3. There are some problems about setuptools version conflict (TODO).
