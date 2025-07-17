@@ -3,3 +3,4 @@ devel/
 build/
 log/
 .vscode/
+.cache/

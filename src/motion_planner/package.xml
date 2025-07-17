@@ -4,13 +4,15 @@
   <name>motion_planner</name>
   <version>0.0.0</version>
   <description>cuRobo motion planner ROS2 package</description>
-  <maintainer email="952025764@qq.com">ubuntu</maintainer>
+  <maintainer email="endermands@qq.com">ubuntu</maintainer>
   <license>TODO: License declaration</license>
 
   <depend>geometry_msgs</depend>
   <depend>std_msgs</depend>
   <depend>trajectory_msgs</depend>
   <depend>sensor_msgs</depend>
+
+  <exec_depend>planner_interface</exec_depend>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>

@@ -159,9 +159,9 @@ pip install opencv-python pyrealsense2 transforms3d
 Verify curobo installation by running `python scripts/curobo_motion.py`.
 
 # Usage
-Modify `src/motion_planner/motion_planner/motion_planner.py` to your own robot.
+Modify `src/motion_planner/config/param.yaml` to your own robot.
 ``` shell
-ros2 run motion_planner motion_planner
+ros2 launch motion_planner motion_planner.launch.py
 ```
 
 # Known Issues
@@ -172,4 +172,6 @@ ros2 run motion_planner motion_planner
 
 2. The ROS package name should not be the same as any packages in mamba environment.
 
-3. There are some problems about setuptools version conflict (TODO).
+3. There are some problems about setuptools version conflict.
+
+4. Compile with argument `--symlink-install` may error.
