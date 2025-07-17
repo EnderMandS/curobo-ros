@@ -16,7 +16,7 @@ nvidia-smi --query-gpu=compute_cap --format=csv,noheader | head -n 1
 ``` shell
 docker pull ghcr.io/endermands/curobo:latest
 docker run --name curobo --runtime=nvidia --gpus all -itd --network=host --ipc=host -v $HOME/.Xauthority:/root/.Xauthority -e DISPLAY -e ROS_DOMAIN_ID=$ROS_DOMAIN_ID -e RMW_IMPLEMENTATION=$RMW_IMPLEMENTATION ghcr.io/endermands/curobo:latest
-docker exec -it curobo zsh
+docker exec -it curobo zsh -l
 ./scripts/post_install.zsh
 ```
 

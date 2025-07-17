@@ -21,9 +21,11 @@ USER $USERNAME
 
 # zsh
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && \
-    sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting)/g' /home/${USERNAME}/.zshrc
+    git clone --depth 1 --recursive https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions && \
+    git clone --depth 1 --recursive https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && \
+    git clone --depth 1 --recursive https://github.com/conda-incubator/conda-zsh-completion ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/conda-zsh-completion && \
+    sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions zsh-syntax-highlighting conda-zsh-completion)/g' /home/${USERNAME}/.zshrc && \
+    sed -i '/^plugins=(/a\autoload -U compinit && compinit' /home/${USERNAME}/.zshrc
 SHELL ["/bin/zsh", "-c"]
 
 # CUDA
@@ -36,6 +38,8 @@ WORKDIR /home/${USERNAME}/code
 RUN wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
     bash Miniconda3-latest-Linux-x86_64.sh -b -u -p ~/miniconda3 && \
     rm Miniconda3-latest-Linux-x86_64.sh && \
+    /home/${USERNAME}/miniconda3/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
+    /home/${USERNAME}/miniconda3/bin/conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && \
     /home/${USERNAME}/miniconda3/bin/conda init zsh && \
     /home/${USERNAME}/miniconda3/bin/conda install -n base -c conda-forge mamba -y
 
@@ -47,24 +51,21 @@ RUN /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
     /home/${USERNAME}/miniconda3/bin/mamba install -n curobo ros-humble-desktop -y && \
     /home/${USERNAME}/miniconda3/bin/mamba install -n curobo colcon-common-extensions catkin_tools rosdep -y
 
-# ROS workspace
-COPY . /home/${USERNAME}/code
-RUN sudo chown -R ${USER_UID}:${USER_GID} /home/${USERNAME}/code && \
-    /home/${USERNAME}/miniconda3/bin/mamba run -n curobo colcon build
+# ROS workspace    
+COPY --chown=${USER_UID}:${USER_GID} . /home/${USERNAME}/code
 
 # cuRobo
 RUN git clone --depth 1 --recursive https://github.com/NVlabs/curobo.git && \
     sed -i 's/requires = \["setuptools>=45", "setuptools_scm>=6.2", "wheel", "torch"\]/requires = ["setuptools>=70", "setuptools_scm>=6.2", "wheel", "torch==2.4.0"]/' curobo/pyproject.toml && \
     sed -i '/setuptools_scm>=6.2/i\  setuptools>=70' curobo/setup.cfg && \
-    # sed -i 's/setuptools_scm>=6.2/setuptools_scm>=6.2,<6.9/' curobo/setup.cfg && \
     sed -i 's/torch>=1.10/torch==2.4.0/' curobo/setup.cfg && \
     touch curobo/COLCON_IGNORE
 
 RUN echo 'eval "$(~/miniconda3/bin/mamba shell hook --shell zsh)"' >> /home/${USERNAME}/.zshrc && \
     echo "mamba activate curobo" >> /home/${USERNAME}/.zshrc && \
-    echo "source ~/code/install/setup.zsh" >> /home/${USERNAME}/.zshrc && \
-    echo ": 1700000000:0;ros2 run motion_planner motion_planner" >> /home/$USERNAME/.zsh_history && \
+    echo ": 1700000000:0;ros2 launch motion_planner motion_planner.launch.py" >> /home/$USERNAME/.zsh_history && \
     echo ": 1700000001:0;colcon build" >> /home/$USERNAME/.zsh_history && \
     echo ": 1700000002:0;./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history
 
+VOLUME /home/${USERNAME}/code
 ENTRYPOINT [ "/bin/zsh" ]
