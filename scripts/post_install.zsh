@@ -26,11 +26,11 @@ echo "Installing nvblox_torch"
 mamba run -n curobo pip install https://github.com/nvidia-isaac/nvblox/releases/download/v0.0.8/nvblox_torch-0.0.8rc5+cu11ubuntu22-863-py3-none-linux_x86_64.whl
 mamba run -n curobo pip install opencv-python pyrealsense2 transforms3d
 
-echo "Building ROS workspace"
-mamba run -n curobo colcon build
-if ! grep -q "source ~/code/install/setup.zsh" ~/.zshrc; then
-    echo "source ~/code/install/setup.zsh" >> ~/.zshrc
-fi
+# echo "Building ROS workspace"
+# mamba run -n curobo colcon build
+# if ! grep -q "source ~/code/install/setup.zsh" ~/.zshrc; then
+#     echo "source ~/code/install/setup.zsh" >> ~/.zshrc
+# fi
 
 echo "\nPost-install script completed successfully."
 echo "Please relogin to your terminal or source ~/.zshrc to apply changes.\n"

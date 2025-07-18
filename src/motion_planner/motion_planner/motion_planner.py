@@ -180,18 +180,19 @@ class PlannerServer(Node):
         try:
             joint_state = torch.tensor(
                 request.joint_state.position,
-                dtype=torch.float32,
                 **(tensor_args.as_torch_dict()),
             ).unsqueeze(0)
             result = self.fk_model.get_state(joint_state)
+            position = result.ee_position[0].cpu().numpy().tolist()
+            quaternion = result.ee_quaternion[0].cpu().numpy().tolist()
             response.success = True
-            response.pose.position.x = result.ee_position[0].item()
-            response.pose.position.y = result.ee_position[1].item()
-            response.pose.position.z = result.ee_position[2].item()
-            response.pose.orientation.w = result.ee_quaternion[0].item()
-            response.pose.orientation.x = result.ee_quaternion[1].item()
-            response.pose.orientation.y = result.ee_quaternion[2].item()
-            response.pose.orientation.z = result.ee_quaternion[3].item()
+            response.pose.position.x = position[0]
+            response.pose.position.y = position[1]
+            response.pose.position.z = position[2]
+            response.pose.orientation.w = quaternion[0]
+            response.pose.orientation.x = quaternion[1]
+            response.pose.orientation.y = quaternion[2]
+            response.pose.orientation.z = quaternion[3]
 
         except Exception as e:
             self.get_logger().error(f"Error during FK computation: {str(e)}")
