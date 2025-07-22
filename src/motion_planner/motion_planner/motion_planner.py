@@ -1,5 +1,6 @@
 import torch
 import os
+import traceback
 
 import rclpy
 from rclpy.node import Node
@@ -147,6 +148,7 @@ class PlannerServer(Node):
 
         except Exception as e:
             self.get_logger().error(f"Error during motion planning: {str(e)}")
+            self.get_logger().error(traceback.format_exc())
             response.success = False
 
         return response
@@ -171,6 +173,7 @@ class PlannerServer(Node):
 
         except Exception as e:
             self.get_logger().error(f"Error during IK computation: {str(e)}")
+            self.get_logger().error(traceback.format_exc())
             response.success = False
 
         return response
@@ -196,6 +199,7 @@ class PlannerServer(Node):
 
         except Exception as e:
             self.get_logger().error(f"Error during FK computation: {str(e)}")
+            self.get_logger().error(traceback.format_exc())
             response.success = False
 
         return response
@@ -232,11 +236,13 @@ class PlannerServer(Node):
         ros_traj.header.stamp = self.get_clock().now().to_msg()
         ros_traj.joint_names = self.cspace_joints
 
-        for i, point in enumerate(curobo_traj):
+        num_waypoints = curobo_traj.position.shape[0]
+        for i in range(num_waypoints):
             traj_point = JointTrajectoryPoint()
-            traj_point.positions = point.position.cpu().numpy().flatten().tolist()
-            traj_point.time_from_start.sec = int(i * 0.01)
-            traj_point.time_from_start.nanosec = int((i * 0.01 - int(i * 0.01)) * 1e9)
+            traj_point.positions = curobo_traj.position[i].cpu().numpy().flatten().tolist()
+            time_sec = i * self.interpolation_dt
+            traj_point.time_from_start.sec = int(time_sec)
+            traj_point.time_from_start.nanosec = int((time_sec - int(time_sec)) * 1e9)
             ros_traj.points.append(traj_point)
 
         return ros_traj
