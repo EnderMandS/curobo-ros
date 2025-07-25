@@ -1,0 +1,134 @@
+##
+## Copyright (c) 2023 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+##
+## NVIDIA CORPORATION, its affiliates and licensors retain all intellectual
+## property and proprietary rights in and to this material, related
+## documentation and any modifications thereto. Any use, reproduction,
+## disclosure or distribution of this material and related documentation
+## without an express license agreement from NVIDIA CORPORATION or
+## its affiliates is strictly prohibited.
+##
+
+robot_cfg:
+  kinematics:
+    usd_path: ""
+    usd_robot_root: ""
+    isaac_usd_path: ""
+    usd_flip_joints: {}
+    usd_flip_joint_limits: []
+
+    urdf_path: "robot/airbot/airbot_g2.urdf"
+    asset_root_path: "robot/airbot"
+    
+    base_link: "base_link"
+    ee_link: "eef_end_link"
+    link_names: null
+    lock_joints: {"left_link": 0.0366, "right_link": 0.0366}
+    extra_links: null
+
+    
+    collision_link_names: ["link1", "link2", "link3", "link4", "link5", "link6", "left_link", "right_link"]
+    collision_spheres:
+      - link1:
+      - "center": [0.0, 0.0, -0.004]
+        "radius": 0.05
+      - link2:
+        - "center": [0.001, 0.002, 0.0]
+          "radius": 0.07
+        - "center": [0.267, 0.005, -0.0]
+          "radius": 0.05
+        - "center": [0.047, 0.012, -0.0]
+          "radius": 0.06544
+        - "center": [0.107, 0.011, -0.0]
+          "radius": 0.06119
+        - "center": [0.152, 0.016, -0.0]
+          "radius": 0.0572
+        - "center": [0.204, 0.015, -0.0]
+          "radius": 0.05348
+      - link3:
+        - "center": [0.004, 0.004, 0.0]
+          "radius": 0.06
+        - "center": [-0.001, 0.228, -0.0]
+          "radius": 0.04
+        - "center": [0.003, 0.056, 0.0]
+          "radius": 0.05533
+        - "center": [0.002, 0.105, -0.0]
+          "radius": 0.05102
+        - "center": [0.001, 0.149, -0.0]
+          "radius": 0.04704
+        - "center": [0.0, 0.19, -0.0]
+          "radius": 0.04338
+      - link4:
+        - "center": [-0.0, 0.001, -0.007]
+          "radius": 0.04
+      - link5:
+        - "center": [-0.0, 0.034, -0.004]
+          "radius": 0.06
+      - link6:
+        - "center": [-0.0, -0.005, 0.117]
+          "radius": 0.04
+        - "center": [-0.056, -0.009, 0.161]
+          "radius": 0.02
+        - "center": [0.057, -0.01, 0.16]
+          "radius": 0.02
+        - "center": [-0.034, -0.009, 0.161]
+          "radius": 0.02
+        - "center": [-0.011, -0.009, 0.161]
+          "radius": 0.02
+        - "center": [0.012, -0.009, 0.16]
+          "radius": 0.02
+        - "center": [0.035, -0.01, 0.16]
+          "radius": 0.02
+        - "center": [-0.058, 0.016, 0.159]
+          "radius": 0.02
+        - "center": [0.056, 0.015, 0.159]
+          "radius": 0.02
+        - "center": [-0.035, 0.016, 0.159]
+          "radius": 0.02
+        - "center": [-0.012, 0.016, 0.159]
+          "radius": 0.02
+        - "center": [0.01, 0.015, 0.159]
+          "radius": 0.02
+        - "center": [0.033, 0.015, 0.159]
+          "radius": 0.02
+      - left_link:
+        - "center": [0.076, 0.001, -0.0]
+          "radius": 0.01
+        - "center": [0.054, 0.0, 0.007]
+          "radius": 0.02
+        - "center": [0.023, 0.015, 0.012]
+          "radius": 0.02
+        - "center": [0.028, -0.018, 0.009]
+          "radius": 0.02
+        - "center": [0.014, -0.017, 0.015]
+          "radius": 0.02
+      - right_link:
+        - "center": [0.016, -0.017, 0.013]
+          "radius": 0.02
+        - "center": [0.017, 0.016, 0.014]
+          "radius": 0.02
+        - "center": [0.036, -0.007, 0.009]
+          "radius": 0.02
+        - "center": [0.046, 0.011, 0.01]
+          "radius": 0.02
+        - "center": [0.077, 0.002, 0.002]
+          "radius": 0.01
+        - "center": [0.064, -0.002, 0.0]
+          "radius": 0.015
+
+    collision_sphere_buffer: 0.005 # float or Dict[str, float]
+    extra_collision_spheres: {}
+    self_collision_ignore: {} # Dict[str, List[str]]
+    self_collision_buffer: {} # Dict[str, float]
+
+    use_global_cumul: True
+    mesh_link_names: null # List[str]
+    external_asset_path: null # Use this to add path for externally located assets/robot folder.
+
+    cspace:
+      joint_names: ["link1", "link2", "link3", "link4", "link5", "link6"]
+      retract_config: [0,0, -0.6, 0.3, 0.0, 0.0, 0.0]
+      null_space_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+      cspace_distance_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+      max_jerk: 100.0
+      max_acceleration: 10.0

@@ -16,6 +16,8 @@ else
     sed -i "s/export TORCH_CUDA_ARCH_LIST=.*/export TORCH_CUDA_ARCH_LIST=$TORCH_CUDA_ARCH_LIST/" ~/.zshrc
 fi
 
+./scripts/copy_assets.zsh
+
 echo "Installing torch"
 mamba run -n curobo pip install torch==2.4.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 cd curobo

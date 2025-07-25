@@ -43,6 +43,12 @@ class PlannerServer(Node):
         ik_service_name = service_base_name + "/ik"
         fk_service_name = service_base_name + "/fk"
 
+        self.get_logger().info(
+            f"Initializing PlannerServer with config file: {self.config_file_name}, "
+        )
+        self.get_logger().info(f"Interpolation dt: {self.interpolation_dt}")
+        self.get_logger().info(f"Max attempts for motion planning: {self.max_attempts}")
+
         self.setup_curobo()
 
         self.motion_srv = self.create_service(
@@ -211,20 +217,19 @@ class PlannerServer(Node):
                 ros_pose.position.x,
                 ros_pose.position.y,
                 ros_pose.position.z,
-                ros_pose.orientation.w,
                 ros_pose.orientation.x,
                 ros_pose.orientation.y,
                 ros_pose.orientation.z,
-            ]
+                ros_pose.orientation.w,
+            ],
+            tensor_args=tensor_args,
+            q_xyzw=True,
         )
 
     def ros_joint_state_to_curobo_joint_state(
         self, ros_joint_state: JointState
     ) -> CuroboJointState:
         """Convert ROS JointState to cuRobo JointState"""
-        if len(ros_joint_state.position) == 0:
-            raise ValueError("Received empty joint state positions")
-
         positions = torch.tensor(ros_joint_state.position).unsqueeze(0).cuda()
         joint_names = ros_joint_state.name
 
@@ -239,7 +244,9 @@ class PlannerServer(Node):
         num_waypoints = curobo_traj.position.shape[0]
         for i in range(num_waypoints):
             traj_point = JointTrajectoryPoint()
-            traj_point.positions = curobo_traj.position[i].cpu().numpy().flatten().tolist()
+            traj_point.positions = (
+                curobo_traj.position[i].cpu().numpy().flatten().tolist()
+            )
             time_sec = i * self.interpolation_dt
             traj_point.time_from_start.sec = int(time_sec)
             traj_point.time_from_start.nanosec = int((time_sec - int(time_sec)) * 1e9)

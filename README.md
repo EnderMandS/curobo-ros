@@ -159,10 +159,10 @@ pip install opencv-python pyrealsense2 transforms3d
 Verify curobo installation by running `python scripts/curobo_motion.py`.
 
 # Usage
-Modify `src/motion_planner/config/param.yaml` to your own robot.
 ``` shell
-ros2 launch motion_planner motion_planner.launch.py
+ros2 launch motion_planner motion_planner.launch.py config_file_name:="franka.yml"
 ```
+You can change the `config_file_name` to your own robot.
 
 # Known Issues
 
