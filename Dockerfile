@@ -32,7 +32,7 @@ SHELL ["/bin/zsh", "-c"]
 RUN echo "export PATH=/usr/local/cuda-11.8/bin:$PATH" >> /home/${USERNAME}/.zshrc && \
     echo "export LD_LIBRARY_PATH=/usr/local/cuda-11.8/lib64:$LD_LIBRARY_PATH" >> /home/${USERNAME}/.zshrc
 
-WORKDIR /home/${USERNAME}/code
+WORKDIR /home/${USERNAME}
 
 # Install miniconda and mamba
 RUN wget -c https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
@@ -50,6 +50,11 @@ RUN /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
     /home/${USERNAME}/miniconda3/bin/conda config --env --add channels robostack-humble && \
     /home/${USERNAME}/miniconda3/bin/mamba install -n curobo ros-humble-desktop -y && \
     /home/${USERNAME}/miniconda3/bin/mamba install -n curobo colcon-common-extensions catkin_tools rosdep -y
+    
+# Build ROS workspace
+RUN git lfs install && \
+    git clone --depth 1 --recursive https://github.com/EnderMandS/curobo-ros.git code && \
+    /home/${USERNAME}/miniconda3/bin/mamba run -n curobo colcon build
 
 # cuRobo
 RUN git clone --depth 1 --recursive https://github.com/NVlabs/curobo.git && \
@@ -58,14 +63,10 @@ RUN git clone --depth 1 --recursive https://github.com/NVlabs/curobo.git && \
     sed -i 's/torch>=1.10/torch==2.4.0/' curobo/setup.cfg && \
     touch curobo/COLCON_IGNORE
 
-# Build ROS workspace    
-COPY --chown=${USER_UID}:${USER_GID} . /home/${USERNAME}/code
-RUN /home/${USERNAME}/miniconda3/bin/mamba run -n curobo colcon build
-
 RUN echo 'eval "$(~/miniconda3/bin/mamba shell hook --shell zsh)"' >> /home/${USERNAME}/.zshrc && \
     echo "mamba activate curobo" >> /home/${USERNAME}/.zshrc && \
     echo "source ~/code/install/setup.zsh" >> ~/.zshrc && \
-    echo ": 1700000000:0;ros2 launch motion_planner motion_planner.launch.py" >> /home/$USERNAME/.zsh_history && \
+    echo ": 1700000000:0;ros2 launch motion_planner motion_planner.launch.py config_file_name:="franka.yml"" >> /home/$USERNAME/.zsh_history && \
     echo ": 1700000001:0;colcon build" >> /home/$USERNAME/.zsh_history && \
     echo ": 1700000002:0;./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history
 
