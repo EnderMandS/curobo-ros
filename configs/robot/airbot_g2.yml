@@ -12,7 +12,7 @@ robot_cfg:
     base_link: "base_link"
     ee_link: "eef_end_link"
     link_names: null
-    lock_joints: {"left_link": 0.0366, "right_link": 0.0366}
+    lock_joints: {"left_joint": 0.0366, "right_joint": 0.0366}
     extra_links: null
 
     
