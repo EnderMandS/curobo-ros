@@ -18,10 +18,10 @@ robot_cfg:
     
     collision_link_names: ["base_link", "shoulder_link", "upper_arm_link", "lower_arm_link", "wrist_link", "gripper_link", "moving_jaw_so101_v1_link"]
     collision_spheres:
-      - base_link:
+      base_link:
         - "center": [0.006, 0.0, 0.0]
           "radius": 0.08
-      - shoulder_link:
+      shoulder_link:
         - "center": [-0.032, -0.0, 0.021]
           "radius": 0.03
         - "center": [-0.022, -0.0, 0.0]
@@ -30,7 +30,7 @@ robot_cfg:
           "radius": 0.03
         - "center": [-0.025, -0.0, -0.019]
           "radius": 0.04
-      - upper_arm_link:
+      upper_arm_link:
         - "center": [0.0, -0.0, 0.018]
           "radius": 0.04
         - "center": [-0.106, -0.007, 0.019]
@@ -39,7 +39,7 @@ robot_cfg:
           "radius": 0.04
         - "center": [-0.071, -0.004, 0.018]
           "radius": 0.04
-      - lower_arm_link:
+      lower_arm_link:
         - "center": [-0.017, -0.003, 0.016]
           "radius": 0.04
         - "center": [-0.128, 0.0, 0.018]
@@ -50,12 +50,12 @@ robot_cfg:
           "radius": 0.03464
         - "center": [-0.107, 0.003, 0.019]
           "radius": 0.03224
-      - wrist_link:
+      wrist_link:
         - "center": [-0.001, -0.038, 0.027]
           "radius": 0.04
         - "center": [-0.002, -0.012, 0.001]
           "radius": 0.02
-      - gripper_link:
+      gripper_link:
         - "center": [-0.003, 0.0, -0.017]
           "radius": 0.04
         - "center": [-0.012, -0.002, -0.096]
@@ -66,7 +66,7 @@ robot_cfg:
           "radius": 0.0126
         - "center": [-0.018, -0.001, -0.063]
           "radius": 0.01587
-      - moving_jaw_so101_v1_link:
+      moving_jaw_so101_v1_link:
         - "center": [-0.003, -0.014, 0.028]
           "radius": 0.02
         - "center": [0.0, -0.011, 0.009]

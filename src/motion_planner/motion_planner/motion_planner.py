@@ -89,6 +89,8 @@ class PlannerServer(Node):
             motion_gen_config = MotionGenConfig.load_from_robot_config(
                 robot_cfg=robot_cfg,
                 interpolation_dt=self.interpolation_dt,
+                self_collision_check=True,
+                self_collision_opt=True,
                 tensor_args=tensor_args,
             )
             self.motion_gen = MotionGen(motion_gen_config)
