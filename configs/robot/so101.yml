@@ -1,0 +1,98 @@
+robot_cfg:
+  kinematics:
+    usd_path: ""
+    usd_robot_root: ""
+    isaac_usd_path: ""
+    usd_flip_joints: {}
+    usd_flip_joint_limits: []
+
+    urdf_path: "robot/so101/so101.urdf"
+    asset_root_path: "robot/so101"
+    
+    base_link: "base_link"
+    ee_link: "eef_link"
+    link_names: null
+    lock_joints: {"gripper": 1.5699}
+    extra_links: null
+
+    
+    collision_link_names: ["base_link", "shoulder_link", "upper_arm_link", "lower_arm_link", "wrist_link", "gripper_link", "moving_jaw_so101_v1_link"]
+    collision_spheres:
+      - base_link:
+        - "center": [0.006, 0.0, 0.0]
+          "radius": 0.08
+      - shoulder_link:
+        - "center": [-0.032, -0.0, 0.021]
+          "radius": 0.03
+        - "center": [-0.022, -0.0, 0.0]
+          "radius": 0.03
+        - "center": [-0.031, 0.0, -0.041]
+          "radius": 0.03
+        - "center": [-0.025, -0.0, -0.019]
+          "radius": 0.04
+      - upper_arm_link:
+        - "center": [0.0, -0.0, 0.018]
+          "radius": 0.04
+        - "center": [-0.106, -0.007, 0.019]
+          "radius": 0.04
+        - "center": [-0.031, -0.004, 0.018]
+          "radius": 0.04
+        - "center": [-0.071, -0.004, 0.018]
+          "radius": 0.04
+      - lower_arm_link:
+        - "center": [-0.017, -0.003, 0.016]
+          "radius": 0.04
+        - "center": [-0.128, 0.0, 0.018]
+          "radius": 0.03
+        - "center": [-0.048, -0.002, 0.017]
+          "radius": 0.03722
+        - "center": [-0.077, -0.001, 0.017]
+          "radius": 0.03464
+        - "center": [-0.107, 0.003, 0.019]
+          "radius": 0.03224
+      - wrist_link:
+        - "center": [-0.001, -0.038, 0.027]
+          "radius": 0.04
+        - "center": [-0.002, -0.012, 0.001]
+          "radius": 0.02
+      - gripper_link:
+        - "center": [-0.003, 0.0, -0.017]
+          "radius": 0.04
+        - "center": [-0.012, -0.002, -0.096]
+          "radius": 0.01
+        - "center": [-0.021, -0.001, -0.04]
+          "radius": 0.02
+        - "center": [-0.015, -0.002, -0.081]
+          "radius": 0.0126
+        - "center": [-0.018, -0.001, -0.063]
+          "radius": 0.01587
+      - moving_jaw_so101_v1_link:
+        - "center": [-0.003, -0.014, 0.028]
+          "radius": 0.02
+        - "center": [0.0, -0.011, 0.009]
+          "radius": 0.02
+        - "center": [-0.008, -0.073, 0.019]
+          "radius": 0.01
+        - "center": [-0.003, -0.038, 0.021]
+          "radius": 0.015
+        - "center": [-0.007, -0.063, 0.019]
+          "radius": 0.01145
+        - "center": [-0.005, -0.052, 0.02]
+          "radius": 0.0131
+
+    collision_sphere_buffer: 0.005 # float or Dict[str, float]
+    extra_collision_spheres: {}
+    self_collision_ignore: {} # Dict[str, List[str]]
+    self_collision_buffer: {} # Dict[str, float]
+
+    use_global_cumul: True
+    mesh_link_names: null # List[str]
+    external_asset_path: null # Use this to add path for externally located assets/robot folder.
+
+    cspace:
+      joint_names: ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll"]
+      retract_config: [0.0,0.26,0.1805,0.1749,1.57]
+      null_space_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+      cspace_distance_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+      max_jerk: 100.0
+      max_acceleration: 10.0
