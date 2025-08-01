@@ -54,14 +54,12 @@ RUN /home/${USERNAME}/miniconda3/bin/mamba create -n curobo && \
 # Build ROS workspace
 RUN git lfs install && \
     git clone --depth 1 --recursive https://github.com/EnderMandS/curobo-ros.git code && \
-    /home/${USERNAME}/miniconda3/bin/mamba run -n curobo colcon build
-
-# cuRobo
-RUN git clone --depth 1 --recursive https://github.com/NVlabs/curobo.git && \
+    cd /home/${USERNAME}/code && \
     sed -i 's/requires = \["setuptools>=45", "setuptools_scm>=6.2", "wheel", "torch"\]/requires = ["setuptools>=70", "setuptools_scm>=6.2", "wheel", "torch==2.4.0"]/' curobo/pyproject.toml && \
     sed -i '/setuptools_scm>=6.2/i\  setuptools>=70' curobo/setup.cfg && \
     sed -i 's/torch>=1.10/torch==2.4.0/' curobo/setup.cfg && \
-    touch curobo/COLCON_IGNORE
+    touch curobo/COLCON_IGNORE && \
+    /home/${USERNAME}/miniconda3/bin/mamba run -n curobo colcon build
 
 RUN echo 'eval "$(~/miniconda3/bin/mamba shell hook --shell zsh)"' >> /home/${USERNAME}/.zshrc && \
     echo "mamba activate curobo" >> /home/${USERNAME}/.zshrc && \
@@ -70,5 +68,6 @@ RUN echo 'eval "$(~/miniconda3/bin/mamba shell hook --shell zsh)"' >> /home/${US
     echo ": 1700000001:0;colcon build" >> /home/$USERNAME/.zsh_history && \
     echo ": 1700000002:0;./scripts/post_install.zsh" >> /home/$USERNAME/.zsh_history
 
+WORKDIR /home/${USERNAME}/code
 VOLUME /home/${USERNAME}/code
 ENTRYPOINT [ "/bin/zsh" ]
