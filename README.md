@@ -160,7 +160,7 @@ pip install opencv-python pyrealsense2 transforms3d
 
 # Verify installation
 
-Verify curobo installation by running `python scripts/curobo_motion.py`.
+Verify curobo installation by running `python scripts/curobo_test.py`.
 
 # Usage
 ``` shell

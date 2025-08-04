@@ -80,9 +80,15 @@ robot_cfg:
         - "center": [-0.005, -0.052, 0.02]
           "radius": 0.0131
 
-    collision_sphere_buffer: 0.005 # float or Dict[str, float]
+    collision_sphere_buffer: 0.0025 # float or Dict[str, float]
     extra_collision_spheres: {}
-    self_collision_ignore: {} # Dict[str, List[str]]
+    self_collision_ignore: {
+      "base_link": ["shoulder_link"],
+      "shoulder_link": ["upper_arm_link"],
+      "upper_arm_link": ["lower_arm_link"],
+      "lower_arm_link": ["wrist_link"],
+      "wrist_link": ["gripper_link"],
+    } # Dict[str, List[str]]
     self_collision_buffer: {} # Dict[str, float]
 
     use_global_cumul: True
@@ -90,8 +96,8 @@ robot_cfg:
     external_asset_path: null # Use this to add path for externally located assets/robot folder.
 
     cspace:
-      joint_names: ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll"]
-      retract_config: [0.0,0.26,0.1805,0.1749,1.57]
+      joint_names: ["shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper"]
+      retract_config: [0.0, 0.26, 0.1805, 0.1749, 1.57, 1.57]
       null_space_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
       cspace_distance_weight: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
       max_jerk: 100.0
