@@ -76,7 +76,7 @@ class PlannerServer(Node):
 
             self.cspace_joints = config_file["robot_cfg"]["kinematics"]["cspace"][
                 "joint_names"
-            ]
+            ][: -len(config_file["robot_cfg"]["kinematics"]["lock_joints"])]
 
             self.get_logger().info(
                 f"Config path file: {os.path.join(get_robot_configs_path(), self.config_file_name)}"
@@ -233,9 +233,7 @@ class PlannerServer(Node):
     ) -> CuroboJointState:
         """Convert ROS JointState to cuRobo JointState"""
         positions = torch.tensor(ros_joint_state.position).unsqueeze(0).cuda()
-        joint_names = ros_joint_state.name
-
-        return CuroboJointState.from_position(positions, joint_names=joint_names)
+        return CuroboJointState.from_position(positions, joint_names=ros_joint_state.name)
 
     def curobo_trajectory_to_ros_trajectory(self, curobo_traj) -> JointTrajectory:
         """Convert cuRobo trajectory to ROS JointTrajectory"""
